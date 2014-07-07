@@ -1,0 +1,9 @@
+(gdb) x/1xw 0xe000ed2c
+0xe000ed2c:	0x40000000
+(gdb) x/1xw 0xe000ed28
+0xe000ed28:	0x00080000
+address of bus fault
+(gdb) x/1xw 0xe000ed38
+0xe000ed38:	0x20020004
+Dump of assembler code from 0x20020004 to 0x20020005:
+   0x20020004:	ldcl	0, cr14, [r0]
