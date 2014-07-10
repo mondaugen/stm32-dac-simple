@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 /* Sampling rate, right now cannot change. */
-#define SYNTHS_SR 11025
+#define SYNTHS_SR 44100
 
 /* Size of cosine wavetable */
 #define SYNTHS_COS_WT_SIZE 4096 

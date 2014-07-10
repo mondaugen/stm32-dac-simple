@@ -14,7 +14,7 @@ PROJ_NAME=main
 CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 
-CFLAGS  = -g -Wall -Tstm32_flash.ld -O3 
+CFLAGS  = -g -Wall -Tstm32_flash.ld -O0 
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 #-mthumb-interwork
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -march=armv7e-m
 

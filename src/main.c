@@ -105,7 +105,15 @@ static double simpleSineR(void)
 
 static double simpleADCRead(void)
 {
-    return ADC_GetConversionValue(ADC1);
+//    return (double)ADC_GetConversionValue(ADC1) / 0x1000 - 0.5;
+    static int lr = 0;
+    lr = 1-lr;
+    if (lr) {
+        GPIO_SetBits(GPIOC,GPIO_Pin_3);
+    } else {
+        GPIO_ResetBits(GPIOC,GPIO_Pin_3);
+    }
+    return 0;
 }
 
 void I2C1_init(void){
@@ -403,6 +411,18 @@ void CS43L22_init(I2C_TypeDef* I2Cx)
 
 }
 
+void GPIO3_config(void)
+{
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+    GPIO_InitTypeDef GPIOC_InitStructure;
+    GPIOC_InitStructure.GPIO_Pin = GPIO_Pin_3;
+    GPIOC_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIOC_InitStructure.GPIO_OType = GPIO_OType_PP; /* What happens with open/drain? */
+    GPIOC_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIOC_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOC, &GPIOC_InitStructure);
+}
+
 void rng_init(void)
 {
     RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
@@ -463,6 +483,7 @@ int main(void)
 
     GPIO_InitTypeDef ADC_GPIO_InitStruct;
     ADC_InitTypeDef ADC_InitStruct;
+    ADC_CommonInitTypeDef ADC_CommonInitStruct;
 
     /* ADC interface clock enable */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
@@ -472,21 +493,34 @@ int main(void)
     /* Configure GPIO for ADC */
     ADC_GPIO_InitStruct.GPIO_Pin = GPIO_Pin_1;
     ADC_GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AN;
+    ADC_GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOA, &ADC_GPIO_InitStruct);
+
+    ADC_CommonInitStruct.ADC_Mode = ADC_Mode_Independent;
+    ADC_CommonInitStruct.ADC_Prescaler = ADC_Prescaler_Div2;
+    ADC_CommonInitStruct.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
+    ADC_CommonInitStruct.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
+    ADC_CommonInit(&ADC_CommonInitStruct);
 
     /* Configure ADC */
     ADC_InitStruct.ADC_Resolution = ADC_Resolution_12b;
     ADC_InitStruct.ADC_ScanConvMode = DISABLE;
     ADC_InitStruct.ADC_ContinuousConvMode = ENABLE;
     ADC_InitStruct.ADC_DataAlign = ADC_DataAlign_Right;
-//    ADC_InitStruct.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
-//    ADC_InitStruct.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+    ADC_InitStruct.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
     ADC_InitStruct.ADC_NbrOfConversion = 1;
     ADC_Init(ADC1,&ADC_InitStruct);
+
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_3Cycles);
 
     /* Enable ADC */
     ADC_Cmd(ADC1,ENABLE);
 
+    ADC_ContinuousModeCmd(ADC1,ENABLE);
+
+    ADC_SoftwareStartConv(ADC1);
+
+    GPIO3_config();
 
 	I2C1_init(); // initialize I2C peripheral
 

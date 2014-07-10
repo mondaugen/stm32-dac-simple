@@ -381,16 +381,16 @@ static void SetSysClock(void)
                    (RCC_PLLCFGR_PLLSRC_HSE) | (PLL_Q << 24);
 
     /* Configure I2SPLL to use PLLI2S clock (same as PLL) */
-//    RCC->CFGR &= (uint32_t)((uint32_t)~RCC_CFGR_I2SSRC);
+    RCC->CFGR &= (uint32_t)((uint32_t)~RCC_CFGR_I2SSRC);
 
     /* Configure PLLI2S Clock dividers */
-//    RCC->PLLI2SCFGR = (PLLI2S_R << 28) | (PLLI2S_N << 6);
+    RCC->PLLI2SCFGR = (PLLI2S_R << 28) | (PLLI2S_N << 6);
 
     /* Enable the main PLL */
     RCC->CR |= RCC_CR_PLLON;
 
     /* Enable I2SPLL */
-//    RCC->CR |= RCC_CR_PLLI2SON;
+    RCC->CR |= RCC_CR_PLLI2SON;
 
     /* Wait till the main PLL is ready */
     while((RCC->CR & RCC_CR_PLLRDY) == 0)
@@ -398,9 +398,9 @@ static void SetSysClock(void)
     }
 
     /* Wait until I2SPLL ready */
-//    while((RCC->CR & RCC_CR_PLLI2SRDY) == 0)
-//    {
-//    }
+    while((RCC->CR & RCC_CR_PLLI2SRDY) == 0)
+    {
+    }
 
    
     /* Configure Flash prefetch, Instruction cache, Data cache and wait state */
