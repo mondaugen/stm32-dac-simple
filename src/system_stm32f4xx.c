@@ -155,8 +155,8 @@
 
 /* I2S Configuration Values. See Main for the SPI Module I2S division and odd
  * factors to get the desired sampling rate */
-#define PLLI2S_N    192
-#define PLLI2S_R    5 
+#define PLLI2S_N    258
+#define PLLI2S_R    3 
 
 /**
   * @}

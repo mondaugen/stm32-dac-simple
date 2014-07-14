@@ -7,9 +7,7 @@ INCS = inc/synths.h inc/interpolation.h
 
 PROJ_NAME=main
 
-# that's it, no need to change anything below this line!
-
-###################################################
+# DON'T: optimize, this makes setting the clock not work (why?)
 
 CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
@@ -17,8 +15,6 @@ OBJCOPY=arm-none-eabi-objcopy
 CFLAGS  = -g -Wall -Tstm32_flash.ld -O0 
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 #-mthumb-interwork
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -march=armv7e-m
-
-###################################################
 
 vpath %.c src
 vpath %.a lib
